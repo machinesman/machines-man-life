@@ -8,6 +8,126 @@
 </style>
 <link rel="stylesheet" href="industrial-theme.css">  
 </head>
+
+<style>
+/* MACHINES MAN - PROFESSIONAL INDUSTRIAL DESIGN */
+
+:root {
+    color-scheme: dark;
+    --bg: #101820;
+    --panel: #1c2833;
+    --panel-light: #263746;
+    --text: #f4f7fa;
+    --muted: #b8c5d1;
+    --orange: #ff9d00;
+    --blue: #2585d8;
+    --border: #3b4b59;
+}
+
+html {
+    background: var(--bg);
+}
+
+body {
+    background: var(--bg) !important;
+    color: var(--text) !important;
+    font-family: "Segoe UI", Arial, sans-serif !important;
+    margin: 0;
+}
+
+h1, h2, h3, h4 {
+    color: #ffffff !important;
+    font-weight: 700;
+}
+
+p, label, li, small {
+    color: var(--muted);
+    line-height: 1.6;
+}
+
+/* Main panels */
+section, article, aside,
+.card, .panel, .controls,
+.control-panel, .info-panel,
+.stats-card, .stat-card,
+.instructions {
+    background-color: var(--panel) !important;
+    color: var(--text) !important;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+}
+
+/* Machine visualization */
+canvas {
+    background-color: #101820;
+    border-radius: 10px;
+}
+
+/* Buttons */
+button {
+    background: var(--orange) !important;
+    color: #111820 !important;
+    border: 1px solid var(--orange) !important;
+    border-radius: 8px !important;
+    padding: 11px 18px !important;
+    font-weight: 700 !important;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+button:hover {
+    background: #ffc04d !important;
+    transform: translateY(-1px);
+}
+
+/* Form controls */
+input, select {
+    accent-color: var(--orange);
+}
+
+input:not([type="range"]),
+select {
+    background: var(--panel-light);
+    color: white;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 9px;
+}
+
+input[type="range"] {
+    accent-color: var(--orange);
+}
+
+/* Status and values */
+strong, b, output {
+    color: #ffffff;
+}
+
+.status, .success {
+    color: #4ade80 !important;
+}
+
+/* Links */
+a {
+    color: #65b7ff;
+}
+
+a:hover {
+    color: var(--orange);
+}
+
+/* Responsive layout */
+@media (max-width: 768px) {
+    body {
+        font-size: 14px;
+    }
+
+    button {
+        padding: 10px 12px !important;
+    }
+}
+</style>
+
 <body>
 <header><strong>⚙ MACHINES <span>MAN</span></strong><a href="index.html">← Back to Machines Man</a></header><main class="wrap"><h1>Injection Moulding Simulation</h1><p class="sub">Explore the basic injection moulding cycle: close the mould, inject molten plastic, cool it, open the mould and eject the finished part.</p><div class="layout"><section class="panel"><h2>Machine view</h2><div id="stage" class="stage"><div class="machine"><div class="hopper"></div><div class="nozzle"></div><div class="leftplate"></div><div class="rightplate"></div><div class="cavity"></div><div class="plastic"></div><div class="base"></div><div class="partlabel">Illustrative machine animation — not a physical machine model</div></div></div><div class="status" id="status"><b>Ready.</b> Press Start Cycle to begin the moulding process.</div><div class="steps" id="steps"><div class="step"></div><div class="step"></div><div class="step"></div><div class="step"></div><div class="step"></div></div><div class="metrics"><div class="metric"><small>Cycle phase</small><strong id="phaseMetric">Ready</strong></div><div class="metric"><small>Parts produced</small><strong id="partsMetric">0</strong></div><div class="metric"><small>Cycle time</small><strong id="timeMetric">0.0 s</strong></div></div></section><aside class="panel"><h2>Process controls</h2><div class="controls"><div class="field"><label for="material">Plastic material</label><select id="material"><option value="ABS">ABS</option><option value="PP">Polypropylene (PP)</option><option value="PE">Polyethylene (PE)</option><option value="PLA">PLA (educational example)</option></select></div><div class="field"><label for="temp">Melt temperature <output id="tempOut">220 °C</output></label><input id="temp" type="range" min="160" max="280" value="220"></div><div class="field"><label for="pressure">Injection pressure <output id="pressureOut">80 MPa</output></label><input id="pressure" type="range" min="30" max="150" value="80"></div><div class="field"><label for="cool">Cooling time <output id="coolOut">3 s</output></label><input id="cool" type="range" min="1" max="8" value="3"></div><div class="field"><label for="speed">Cycle speed <output id="speedOut">1.0×</output></label><input id="speed" type="range" min="5" max="20" value="10"></div><div class="buttons"><button class="btn" id="start">▶ Start Cycle</button><button class="btn secondary" id="pause" disabled>Ⅱ Pause</button><button class="btn secondary" id="stepBtn">Next Phase →</button><button class="btn secondary" id="reset">↻ Reset</button></div></div><p class="note">Educational visualization only. Temperature and pressure controls are illustrative and are not process recommendations. Real moulding settings depend on the resin, mould, machine and manufacturer instructions. Do not use this simulation to operate real equipment.</p></aside></div><section class="panel" style="margin-top:18px"><h2>How the cycle works</h2><ol style="color:#c4d5e9;line-height:1.8;padding-left:22px"><li><b>Mould closing:</b> the two mould halves close to form the cavity.</li><li><b>Injection:</b> molten polymer is pushed through the nozzle into the cavity.</li><li><b>Cooling:</b> the plastic cools and solidifies inside the mould.</li><li><b>Mould opening:</b> the mould halves separate.</li><li><b>Ejection:</b> the finished part is released from the mould.</li></ol></section></main>
 <script>
