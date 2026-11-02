@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Machines Man | Engineering Calculator Lab</title>
+<style>
+:root{--bg:#f3f5f7;--panel:#fff;--line:#d8dee6;--ink:#17212b;--muted:#647181;--accent:#e58a22;--accent-dark:#bd6810;--soft:#fff4e6;--good:#16834a;--bad:#c43d3d}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Arial,Helvetica,sans-serif}
+header{background:#fff;border-bottom:1px solid var(--line);padding:16px 5%;display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap}
+.brand{font-size:21px;font-weight:800;letter-spacing:.3px}.brand span{color:var(--accent-dark)}header a{color:#33475b;text-decoration:none;font-weight:700}
+.wrap{max-width:1250px;margin:auto;padding:28px 18px 55px}h1{font-size:clamp(27px,4vw,38px);margin:0 0 8px}.intro{color:var(--muted);line-height:1.6;margin:0 0 22px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}.tab{border:1px solid var(--line);background:#fff;color:#263442;padding:10px 14px;border-radius:8px;font-weight:700;cursor:pointer}.tab.active,.tab:hover{background:var(--accent);border-color:var(--accent);color:#fff}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.card{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:18px;box-shadow:0 5px 18px #17212b0a}.card h2{font-size:19px;margin:0 0 6px}.desc{color:var(--muted);font-size:13px;line-height:1.5;margin:0 0 15px}
+.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.field{display:grid;gap:6px}.field.full{grid-column:1/-1}label{font-size:13px;font-weight:700;color:#394858}
+input,select{width:100%;padding:10px 11px;border:1px solid #cbd3dc;border-radius:7px;background:#fff;color:var(--ink);font:inherit;min-width:0}input:focus,select:focus{outline:2px solid #f4c58e;border-color:var(--accent)}
+.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}.btn{border:0;border-radius:8px;padding:10px 15px;background:var(--accent);color:#fff;font-weight:700;cursor:pointer}.btn:hover{background:var(--accent-dark)}.btn.light{background:#edf1f5;color:#293746;border:1px solid var(--line)}
+.result{margin-top:14px;padding:12px 13px;background:#f7f9fb;border:1px solid var(--line);border-radius:8px;min-height:46px;line-height:1.55;overflow-wrap:anywhere}.result strong{color:#152331}.result .value{font-size:20px;font-weight:800;color:var(--good)}.hint{font-size:12px;color:var(--muted);line-height:1.5;margin-top:10px}
+.panel{display:none}.panel.active{display:block}.wide{grid-column:1/-1}.swatches{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}.swatch{width:25px;height:34px;border:1px solid #777;border-radius:4px}
+footer{text-align:center;color:var(--muted);font-size:12px;padding:22px}
+@media(max-width:760px){.grid{grid-template-columns:1fr}.fields{grid-template-columns:1fr}.field.full{grid-column:auto}.wrap{padding-top:22px}}
+</style>
+</head>
+<body>
+<header><div class="brand">⚙ MACHINES <span>MAN</span> | ENGINEERING LAB</div><a href="index.html">← Back to Home</a></header>
+<main class="wrap">
+<h1>Engineering Calculator Lab</h1>
+<p class="intro">Practical calculators for electrical, electronics, instrumentation, mechanical, control and engineering mathematics. Enter values and select Calculate to view the result.</p>
+<nav class="tabs" aria-label="Calculator categories">
+<button class="tab active" data-tab="electrical">Electrical</button><button class="tab" data-tab="electronics">Electronics</button><button class="tab" data-tab="instrumentation">Instrumentation</button><button class="tab" data-tab="mechanical">Mechanical</button><button class="tab" data-tab="control">Control</button><button class="tab" data-tab="maths">Engineering Maths</button>
+</nav>
+<section class="panel active" id="electrical">
+<div class="grid">
+<article class="card"><h2>Ohm's Law</h2><p class="desc">Calculate voltage, current or resistance using V = I × R.</p>
+<div class="fields"><div class="field"><label for="ohmMode">Find</label><select id="ohmMode"><option value="v">Voltage (V)</option><option value="i">Current (A)</option><option value="r">Resistance (Ω)</option></select></div><div class="field"><label for="ohmA">Voltage (V)</label><input id="ohmA" type="number" step="any" value="12"></div><div class="field"><label for="ohmB">Current (A)</label><input id="ohmB" type="number" step="any" value="2"></div><div class="field"><label for="ohmC">Resistance (Ω)</label><input id="ohmC" type="number" step="any" value="6"></div></div>
+<div class="actions"><button class="btn" onclick="ohms()">Calculate</button><button class="btn light" onclick="clearResult('ohmResult')">Clear result</button></div><div class="result" id="ohmResult" aria-live="polite">Result will appear here.</div></article>
+
+<article class="card"><h2>Electrical Power</h2><p class="desc">Calculate power from voltage and current (DC or unity-power-factor example).</p>
+<div class="fields"><div class="field"><label for="powerV">Voltage (V)</label><input id="powerV" type="number" step="any" value="230"></div><div class="field"><label for="powerI">Current (A)</label><input id="powerI" type="number" step="any" value="2"></div></div>
+<div class="actions"><button class="btn" onclick="powerCalc()">Calculate</button></div><div class="result" id="powerResult">Result will appear here.</div></article>
+
+<article class="card"><h2>Electrical Energy</h2><p class="desc">Energy = Power × Time. Converts watt-hours to kilowatt-hours.</p>
+<div class="fields"><div class="field"><label for="energyP">Power (W)</label><input id="energyP" type="number" step="any" value="1000"></div><div class="field"><label for="energyT">Time (hours)</label><input id="energyT" type="number" step="any" value="3"></div></div>
+<div class="actions"><button class="btn" onclick="energyCalc()">Calculate</button></div><div class="result" id="energyResult">Result will appear here.</div></article>
+
+<article class="card"><h2>Series / Parallel Resistance</h2><p class="desc">Enter resistor values separated by commas, for example 100, 220, 330.</p>
+<div class="fields"><div class="field full"><label for="resValues">Resistances (Ω)</label><input id="resValues" value="100, 220, 330"></div><div class="field"><label for="resMode">Connection</label><select id="resMode"><option value="series">Series</option><option value="parallel">Parallel</option></select></div></div>
+<div class="actions"><button class="btn" onclick="resistanceCalc()">Calculate</button></div><div class="result" id="resResult">Result will appear here.</div></article>
+</div></section>
+
+<section class="panel" id="electronics"><div class="grid">
+<article class="card"><h2>Resistor Colour Code (4-band)</h2><p class="desc">Select the first two digits, multiplier and tolerance bands.</p>
+<div class="fields"><div class="field"><label for="band1">Band 1</label><select id="band1"></select></div><div class="field"><label for="band2">Band 2</label><select id="band2"></select></div><div class="field"><label for="band3">Multiplier</label><select id="band3"></select></div><div class="field"><label for="band4">Tolerance</label><select id="band4"></select></div></div>
+<div class="actions"><button class="btn" onclick="decodeResistor()">Decode resistor</button></div><div class="result" id="colorResult">Choose the bands and calculate.</div></article>
+
+<article class="card"><h2>LED Series Resistor</h2><p class="desc">R = (Supply voltage − LED forward voltage) / LED current.</p>
+<div class="fields"><div class="field"><label for="ledVs">Supply voltage (V)</label><input id="ledVs" type="number" step="any" value="5"></div><div class="field"><label for="ledVf">LED forward voltage (V)</label><input id="ledVf" type="number" step="any" value="2"></div><div class="field"><label for="ledMa">LED current (mA)</label><input id="ledMa" type="number" step="any" value="20"></div></div>
+<div class="actions"><button class="btn" onclick="ledCalc()">Calculate</button></div><div class="result" id="ledResult">Result will appear here.</div></article>
+
+<article class="card"><h2>Capacitive Reactance</h2><p class="desc">Xc = 1 / (2πfC).</p>
+<div class="fields"><div class="field"><label for="capF">Frequency (Hz)</label><input id="capF" type="number" step="any" value="50"></div><div class="field"><label for="capC">Capacitance (µF)</label><input id="capC" type="number" step="any" value="10"></div></div>
+<div class="actions"><button class="btn" onclick="reactanceCalc()">Calculate</button></div><div class="result" id="reactanceResult">Result will appear here.</div></article>
+
+<article class="card"><h2>RC Time Constant</h2><p class="desc">τ = R × C. Enter resistance in kΩ and capacitance in µF.</p>
+<div class="fields"><div class="field"><label for="rcR">Resistance (kΩ)</label><input id="rcR" type="number" step="any" value="10"></div><div class="field"><label for="rcC">Capacitance (µF)</label><input id="rcC" type="number" step="any" value="100"></div></div>
+<div class="actions"><button class="btn" onclick="rcCalc()">Calculate</button></div><div class="result" id="rcResult">Result will appear here.</div></article>
+</div></section>
+
+<section class="panel" id="instrumentation"><div class="grid">
+<article class="card"><h2>Linear Sensor Scaling</h2><p class="desc">Maps a sensor input range to an engineering output range.</p>
+<div class="fields"><div class="field"><label for="scaleIn">Measured input</label><input id="scaleIn" type="number" step="any" value="12"></div><div class="field"><label for="scaleMin">Input minimum</label><input id="scaleMin" type="number" step="any" value="4"></div><div class="field"><label for="scaleMax">Input maximum</label><input id="scaleMax" type="number" step="any" value="20"></div><div class="field"><label for="engMin">Engineering minimum</label><input id="engMin" type="number" step="any" value="0"></div><div class="field"><label for="engMax">Engineering maximum</label><input id="engMax" type="number" step="any" value="100"></div></div>
+<div class="actions"><button class="btn" onclick="scaleCalc()">Calculate</button></div><div class="result" id="scaleResult">Result will appear here.</div></article>
+
+<article class="card"><h2>Calibration Error</h2><p class="desc">Error = measured value − reference value.</p>
+<div class="fields"><div class="field"><label for="measured">Measured value</label><input id="measured" type="number" step="any" value="49.5"></div><div class="field"><label for="reference">Reference value</label><input id="reference" type="number" step="any" value="50"></div></div>
+<div class="actions"><button class="btn" onclick="calError()">Calculate</button></div><div class="result" id="calResult">Result will appear here.</div></article>
+
+<article class="card"><h2>Percentage Error</h2><p class="desc">Percentage error = |measured − reference| / |reference| × 100.</p>
+<div class="fields"><div class="field"><label for="pctMeasured">Measured value</label><input id="pctMeasured" type="number" step="any" value="9.8"></div><div class="field"><label for="pctReference">Reference value</label><input id="pctReference" type="number" step="any" value="10"></div></div>
+<div class="actions"><button class="btn" onclick="pctError()">Calculate</button></div><div class="result" id="pctResult">Result will appear here.</div></article>
+</div></section>
+
+<section class="panel" id="mechanical"><div class="grid">
+<article class="card"><h2>Force</h2><p class="desc">Newton's second law: F = m × a.</p>
+<div class="fields"><div class="field"><label for="mass">Mass (kg)</label><input id="mass" type="number" step="any" value="10"></div><div class="field"><label for="accel">Acceleration (m/s²)</label><input id="accel" type="number" step="any" value="2"></div></div><div class="actions"><button class="btn" onclick="forceCalc()">Calculate</button></div><div class="result" id="forceResult">Result will appear here.</div></article>
+
+<article class="card"><h2>Pressure</h2><p class="desc">P = F / A.</p>
+<div class="fields"><div class="field"><label for="pressForce">Force (N)</label><input id="pressForce" type="number" step="any" value="500"></div><div class="field"><label for="area">Area (m²)</label><input id="area" type="number" step="any" value="0.05"></div></div><div class="actions"><button class="btn" onclick="pressureCalc()">Calculate</button></div><div class="result" id="pressureResult">Result will appear here.</div></article>
+
+<article class="card"><h2>Torque</h2><p class="desc">T = F × perpendicular distance.</p>
+<div class="fields"><div class="field"><label for="torqueF">Force (N)</label><input id="torqueF" type="number" step="any" value="100"></div><div class="field"><label for="arm">Distance (m)</label><input id="arm" type="number" step="any" value="0.25"></div></div><div class="actions"><button class="btn" onclick="torqueCalc()">Calculate</button></div><div class="result" id="torqueResult">Result will appear here.</div></article>
+
+<article class="card"><h2>Rotational Speed Converter</h2><p class="desc">Convert revolutions per minute (RPM) to angular velocity (rad/s).</p>
+<div class="fields"><div class="field"><label for="rpm">Speed (RPM)</label><input id="rpm" type="number" step="any" value="1500"></div></div><div class="actions"><button class="btn" onclick="rpmCalc()">Calculate</button></div><div class="result" id="rpmResult">Result will appear here.</div></article>
+
+<article class="card"><h2>Mechanical Power</h2><p class="desc">Rotational power: P = 2πNT / 60.</p>
+<div class="fields"><div class="field"><label for="powerRpm">Speed (RPM)</label><input id="powerRpm" type="number" step="any" value="1440"></div><div class="field"><label for="powerTorque">Torque (N·m)</label><input id="powerTorque" type="number" step="any" value="10"></div></div><div class="actions"><button class="btn" onclick="mechPower()">Calculate</button></div><div class="result" id="mechPowerResult">Result will appear here.</div></article>
+</div></section>
+
+<section class="panel" id="control"><div class="grid">
+<article class="card"><h2>First-Order Time Constant</h2><p class="desc">For a first-order system, τ = 1 / a for denominator (τs + 1), or τ = 1 / pole magnitude for a real stable pole.</p>
+<div class="fields"><div class="field"><label for="tau">Time constant (s)</label><input id="tau" type="number" step="any" value="2"></div></div><div class="actions"><button class="btn" onclick="controlCalc()">Calculate</button></div><div class="result" id="controlResult">Result will appear here.</div></article>
+
+<article class="card"><h2>Second-Order System Parameters</h2><p class="desc">For s² + 2ζωₙs + ωₙ²: calculate damped natural frequency and damping type.</p>
+<div class="fields"><div class="field"><label for="zeta">Damping ratio (ζ)</label><input id="zeta" type="number" step="any" value="0.5"></div><div class="field"><label for="wn">Natural frequency (rad/s)</label><input id="wn" type="number" step="any" value="10"></div></div><div class="actions"><button class="btn" onclick="secondOrder()">Calculate</button></div><div class="result" id="secondResult">Result will appear here.</div></article>
+
+<article class="card"><h2>Transfer Function DC Gain</h2><p class="desc">For G(s) = (b₀) / (a₁s + a₀), DC gain = b₀ / a₀ (when a₀ is non-zero).</p>
+<div class="fields"><div class="field"><label for="tfNum">Numerator constant (b₀)</label><input id="tfNum" type="number" step="any" value="5"></div><div class="field"><label for="tfDen">Denominator constant (a₀)</label><input id="tfDen" type="number" step="any" value="2"></div></div><div class="actions"><button class="btn" onclick="gainCalc()">Calculate</button></div><div class="result" id="gainResult">Result will appear here.</div></article>
+</div></section>
+
+<section class="panel" id="maths"><div class="grid">
+<article class="card"><h2>Scientific Calculator</h2><p class="desc">Use +, −, ×, ÷, brackets, powers (^), sin, cos, tan, sqrt, log (base 10), ln and π. Trigonometric inputs are in degrees.</p>
+<div class="fields"><div class="field full"><label for="expression">Expression</label><input id="expression" placeholder="Example: sin(30) + sqrt(25) + 2^3"></div></div><div class="actions"><button class="btn" onclick="scientificCalc()">Calculate</button><button class="btn light" onclick="document.getElementById('expression').value='';clearResult('sciResult')">Clear</button></div><div class="result" id="sciResult">Result will appear here.</div></article>
+
+<article class="card"><h2>Unit Converter</h2><p class="desc">Convert common engineering units.</p>
+<div class="fields"><div class="field"><label for="unitValue">Value</label><input id="unitValue" type="number" step="any" value="1"></div><div class="field"><label for="unitType">Conversion</label><select id="unitType"><option value="mm-m">Millimetre → metre</option><option value="m-mm">Metre → millimetre</option><option value="bar-pa">Bar → pascal</option><option value="pa-bar">Pascal → bar</option><option value="kw-w">Kilowatt → watt</option><option value="w-kw">Watt → kilowatt</option><option value="c-k">Celsius → kelvin</option><option value="k-c">Kelvin → Celsius</option><option value="kmh-ms">km/h → m/s</option><option value="ms-kmh">m/s → km/h</option></select></div></div><div class="actions"><button class="btn" onclick="unitCalc()">Convert</button></div><div class="result" id="unitResult">Result will appear here.</div></article>
+</div></section>
+<p class="hint">Note: These calculators are for learning and preliminary calculations. Check units, assumptions, component ratings, safety limits and applicable engineering standards before using results in real designs or equipment.</p>
+</main><footer>Machines Man · Engineering Calculator Lab</footer>
+<script>
+const $=id=>document.getElementById(id);
+const num=id=>{const v=Number($(id).value);if(!Number.isFinite(v))throw Error('Enter valid numeric values.');return v};
+const show=(id,html)=>$(id).innerHTML=html;
+const fmt=x=>Number(x).toLocaleString(undefined,{maximumFractionDigits:6});
+function run(id,fn){try{fn()}catch(e){show(id,'<span style="color:#c43d3d">'+e.message+'</span>')}}
+function clearResult(id){show(id,'Result will appear here.')}
+document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===b));document.querySelectorAll('.panel').forEach(x=>x.classList.toggle('active',x.id===b.dataset.tab))}));
+function ohms(){run('ohmResult',()=>{let m=$('ohmMode').value,a=num('ohmA'),b=num('ohmB'),c=num('ohmC'),r;if(m==='v'){if(!Number.isFinite(b*c))throw Error('Invalid values');r=b*c;show('ohmResult',`Voltage = <span class="value">${fmt(r)} V</span><br>V = I × R`)}else if(m==='i'){if(c===0)throw Error('Resistance cannot be zero.');r=a/c;show('ohmResult',`Current = <span class="value">${fmt(r)} A</span><br>I = V / R`)}else{if(b===0)throw Error('Current cannot be zero.');r=a/b;show('ohmResult',`Resistance = <span class="value">${fmt(r)} Ω</span><br>R = V / I`)}})}
+function powerCalc(){run('powerResult',()=>{let p=num('powerV')*num('powerI');show('powerResult',`Power = <span class="value">${fmt(p)} W</span><br>P = V × I`)})}
+function energyCalc(){run('energyResult',()=>{let wh=num('energyP')*num('energyT');show('energyResult',`Energy = <span class="value">${fmt(wh/1000)} kWh</span><br>${fmt(wh)} Wh`)})}
+function resistanceCalc(){run('resResult',()=>{let a=$('resValues').value.split(',').map(x=>Number(x.trim()));if(!a.length||a.some(x=>!Number.isFinite(x)||x<=0))throw Error('Enter positive resistor values separated by commas.');let r=$('resMode').value==='series'?a.reduce((s,x)=>s+x,0):1/a.reduce((s,x)=>s+1/x,0);show('resResult',`Equivalent resistance = <span class="value">${fmt(r)} Ω</span>`)})}
+const colors=[['Black',0,'#000000'],['Brown',1,'#8b4513'],['Red',2,'#e32636'],['Orange',3,'#ff8c00'],['Yellow',4,'#ffd700'],['Green',5,'#228b22'],['Blue',6,'#2468d8'],['Violet',7,'#8a2be2'],['Grey',8,'#808080'],['White',9,'#ffffff']];
+function fillColorSelect(id,items){$(id).innerHTML=items.map((x,i)=>`<option value="${x[1]}">${x[0]}</option>`).join('')}
+fillColorSelect('band1',colors);fillColorSelect('band2',colors);
+$('band3').innerHTML=[...colors.map(x=>`<option value="${x[1]}">${x[0]} (×${Math.pow(10,x[1])})</option>`),'<option value="-1">Gold (×0.1)</option>','<option value="-2">Silver (×0.01)</option>'].join('');
+$('band4').innerHTML='<option value="5">Gold (±5%)</option><option value="10">Silver (±10%)</option><option value="1">Brown (±1%)</option><option value="2">Red (±2%)</option><option value="0">No band (±20%)</option>';
+function decodeResistor(){run('colorResult',()=>{let v=(Number($('band1').value)*10+Number($('band2').value))*Math.pow(10,Number($('band3').value)),t=Number($('band4').value);show('colorResult',`Resistance = <span class="value">${fmt(v)} Ω</span><br>Tolerance: ±${t}%<br>Range: ${fmt(v*(1-t/100))} Ω to ${fmt(v*(1+t/100))} Ω`)})}
+function ledCalc(){run('ledResult',()=>{let v=num('ledVs')-num('ledVf'),i=num('ledMa');if(v<=0||i<=0)throw Error('Supply must exceed LED forward voltage and current must be positive.');let r=v/(i/1000);show('ledResult',`Calculated resistance = <span class="value">${fmt(r)} Ω</span><br>Select a suitable standard resistor at or above this value and verify its power rating.`)})}
+function reactanceCalc(){run('reactanceResult',()=>{let f=num('capF'),c=num('capC')*1e-6;if(f<=0||c<=0)throw Error('Frequency and capacitance must be positive.');show('reactanceResult',`Capacitive reactance = <span class="value">${fmt(1/(2*Math.PI*f*c))} Ω</span>`)})}
+function rcCalc(){run('rcResult',()=>{let t=num('rcR')*1000*num('rcC')*1e-6;if(t<0)throw Error('Values cannot be negative.');show('rcResult',`Time constant τ = <span class="value">${fmt(t)} s</span>`)})}
+function scaleCalc(){run('scaleResult',()=>{let x=num('scaleIn'),a=num('scaleMin'),b=num('scaleMax'),c=num('engMin'),d=num('engMax');if(a===b)throw Error('Input minimum and maximum must differ.');let y=c+(x-a)*(d-c)/(b-a);show('scaleResult',`Scaled output = <span class="value">${fmt(y)}</span><br>Linear scaling formula applied.`)})}
+function calError(){run('calResult',()=>{let e=num('measured')-num('reference');show('calResult',`Error = <span class="value">${fmt(e)}</span><br>${e>0?'Positive error':e<0?'Negative error':'No error'}`)})}
+function pctError(){run('pctResult',()=>{let r=num('pctReference');if(r===0)throw Error('Reference value cannot be zero.');let p=Math.abs(num('pctMeasured')-r)/Math.abs(r)*100;show('pctResult',`Percentage error = <span class="value">${fmt(p)}%</span>`)})}
+function forceCalc(){run('forceResult',()=>show('forceResult',`Force = <span class="value">${fmt(num('mass')*num('accel'))} N</span>`))}
+function pressureCalc(){run('pressureResult',()=>{let a=num('area');if(a<=0)throw Error('Area must be greater than zero.');show('pressureResult',`Pressure = <span class="value">${fmt(num('pressForce')/a)} Pa</span>`)})}
+function torqueCalc(){run('torqueResult',()=>show('torqueResult',`Torque = <span class="value">${fmt(num('torqueF')*num('arm'))} N·m</span>`))}
+function rpmCalc(){run('rpmResult',()=>show('rpmResult',`Angular velocity = <span class="value">${fmt(num('rpm')*2*Math.PI/60)} rad/s</span>`))}
+function mechPower(){run('mechPowerResult',()=>show('mechPowerResult',`Mechanical power = <span class="value">${fmt(2*Math.PI*num('powerRpm')*num('powerTorque')/60)} W</span>`))}
+function controlCalc(){run('controlResult',()=>{let t=num('tau');if(t<=0)throw Error('Time constant must be positive.');show('controlResult',`Pole = <span class="value">${fmt(-1/t)} rad/s</span><br>Approximate 2% settling time ≈ ${fmt(4*t)} s`)})}
+function secondOrder(){run('secondResult',()=>{let z=num('zeta'),w=num('wn');if(w<=0||z<0)throw Error('Natural frequency must be positive and damping ratio cannot be negative.');let wd=w*Math.sqrt(Math.max(0,1-z*z)),type=z===0?'Undamped':z<1?'Underdamped':z===1?'Critically damped':'Overdamped';show('secondResult',`Damping type: <strong>${type}</strong><br>Damped natural frequency = <span class="value">${fmt(wd)} rad/s</span>${z<1?'':'<br>Damped oscillation is absent for ζ ≥ 1.'}`)})}
+function gainCalc(){run('gainResult',()=>{let d=num('tfDen');if(d===0)throw Error('Denominator constant cannot be zero.');show('gainResult',`DC gain = <span class="value">${fmt(num('tfNum')/d)}</span>`)})}
+function scientificCalc(){run('sciResult',()=>{let s=$('expression').value.trim();if(!s)throw Error('Enter an expression.');if(!/^[0-9+\-*/().,\s%^a-zA-Zπ]+$/.test(s))throw Error('Unsupported character in expression.');s=s.replace(/π/g,'PI').replace(/\^/g,'**').replace(/\bPI\b/g,'Math.PI').replace(/\bsin\s*\(/g,'Math.sin(Math.PI/180*').replace(/\bcos\s*\(/g,'Math.cos(Math.PI/180*').replace(/\btan\s*\(/g,'Math.tan(Math.PI/180*').replace(/\bsqrt\s*\(/g,'Math.sqrt(').replace(/\blog\s*\(/g,'Math.log10(').replace(/\bln\s*\(/g,'Math.log(');if(!/^[0-9+\-*/().,\sA-Za-z_*]+$/.test(s))throw Error('Invalid expression.');let fn=Function('"use strict"; return ('+s+')');let v=fn();if(typeof v!=='number'||!Number.isFinite(v))throw Error('Expression did not produce a finite number.');show('sciResult',`Answer = <span class="value">${fmt(v)}</span>`)})}
+function unitCalc(){run('unitResult',()=>{let v=num('unitValue'),t=$('unitType').value,f={ 'mm-m':[.001,'m'],'m-mm':[1000,'mm'],'bar-pa':[100000,'Pa'],'pa-bar':[.00001,'bar'],'kw-w':[1000,'W'],'w-kw':[.001,'kW'],'c-k':[null,'K'],'k-c':[null,'°C'],'kmh-ms':[1/3.6,'m/s'],'ms-kmh':[3.6,'km/h']},r,u;if(t==='c-k'){r=v+273.15;u='K'}else if(t==='k-c'){r=v-273.15;u='°C'}else{r=v*f[t][0];u=f[t][1]}show('unitResult',`Converted value = <span class="value">${fmt(r)} ${u}</span>`)})}
+</script>
+</body></html>
